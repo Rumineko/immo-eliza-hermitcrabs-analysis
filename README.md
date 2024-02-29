@@ -27,7 +27,7 @@ Features:
 To run the program, clone this repo on your local machine, navigate to its directory in your terminal, make sure you have first executed your requirements.txt, then execute:
 
 ```
-python3 clean.py
+python3 main.py
 ```
 
 ## 🗂️ File Structure
@@ -49,8 +49,11 @@ python3 clean.py
 ├── reports/
 │   └── PLACEHOLDER.pdf
 │
+├── src/
+│   └── clean.py
+│
 ├── .gitignore
-├── clean.py
+├── main.py
 └── README.md
 ```
 

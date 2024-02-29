@@ -3,7 +3,7 @@ import plotly.express as px
 import os
 
 
-class Cleaned:
+class Clean:
     def __init__(self):
         pass
 
@@ -19,7 +19,24 @@ class Cleaned:
 
     def scatter_plot(self, data, x, y):
         # Create a scatter plot
-        fig = px.scatter(data, x=x, y=y)
+        indexed = data.set_index("ID", inplace=True, drop=True)
+        fig = px.scatter(
+            indexed,
+            x=x,
+            y=y,
+            color="Type",
+            title="Price vs Area",
+            labels={"Price": "Price (€)", "Habitable Surface": "Area (m²)"},
+            hover_data=[
+                "Locality",
+                "Postal Code",
+                "Room Count",
+                "Bedroom Count",
+                "Bathroom Count",
+                "Subtype",
+                "Build Year",
+            ],
+        )
         return self.to_html(fig, f"scatter_plot_{x}_{y}.html")
 
     def to_html(self, fig, path):
