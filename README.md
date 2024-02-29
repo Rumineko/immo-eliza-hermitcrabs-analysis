@@ -34,13 +34,21 @@ python3 clean.py
 
 ```
 .
+├── analysis/
+│   ├── PLACEHOLDER
+│   └── PLACEHOLDER
+│
 ├── data/
 │   ├── cleaned/
-│   │   ├── cleaned_data.png
+│   │   ├── some_plot.html
 │   │   └── PLACEHOLDER
 │   └── raw/
-│   │   ├── rawdata.csv
+│       ├── rawdata.csv
 │       └── rawdata.json
+│
+├── reports/
+│   └── PLACEHOLDER.pdf
+│
 ├── .gitignore
 ├── clean.py
 └── README.md
