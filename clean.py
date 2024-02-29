@@ -9,7 +9,8 @@ class Cleaned:
 
     def load_data(self, path):
         # Import Data and Convert it into a DataFrame
-        self.data = pd.read_csv(path)
+        newpath = os.path.join("data", "raw", path)
+        self.data = pd.read_csv(newpath)
         return self.data
 
     def fill_empty_data(self, data, column, value):
