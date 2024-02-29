@@ -50,17 +50,6 @@ python3 clean.py
 
 The program's output are graphs containing information about approx 12,000 properties all over Belgium.
 
-**Step 1**: a csv file with ~19,000 unique property urls
-
-![20k-urls](./assets/first-csv.jpg)
-
-**Step 2**: a json file with 11,879 unique properties and 44 data points per property
-
-![json-dump](./assets/final-json.png)
-
-**Step 3**: a csv file with data about 11,879 properties in Belgium - ⚠️ to be further processed
-
-![csv-output](./assets/final-csv.png)
 
 ## 📂 Project background & timeline
 
