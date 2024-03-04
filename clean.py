@@ -1,17 +1,18 @@
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import os
 from pandas import DataFrame
 
 
-def load_data(path):
+def load_data(path: str) -> DataFrame:
     # Import Data and Convert it into a DataFrame
     current_dir = os.path.dirname(os.path.abspath(__file__))
     newpath = os.path.join(current_dir, "data", "raw", path)
-    data = pd.read_csv(newpath)
-    data.drop_duplicates(subset="ID", inplace=True)
-    data.set_index("ID", drop=True, inplace=True)
-    return data
+    df = pd.read_csv(newpath)
+    df.drop_duplicates(subset="ID", inplace=True)
+    df.set_index("ID", drop=True, inplace=True)
+    return df
 
 
 def fill_empty_data(data):
@@ -26,29 +27,78 @@ def fill_empty_data(data):
     return data
 
 
-def append_data(data):
+def append_data(df: DataFrame) -> DataFrame:
     # Append new data to the existing data
     current_dir = os.path.dirname(os.path.abspath(__file__))
     postals = pd.read_csv(os.path.join(current_dir, "src", "zipcodes.csv"))
-    for postalcode in data["Postal Code"]:
+    for postalcode in df["Postal Code"]:
         municipality = postals[postals["Postcode"] == postalcode]["Hoofdgemeente"]
         province = postals[postals["Postcode"] == postalcode]["Provincie"]
         if not municipality.empty:
-            data.loc[data["Postal Code"] == postalcode, "Municipality"] = (
+            df.loc[df["Postal Code"] == postalcode, "Municipality"] = (
                 municipality.values[0]
             )
         if not province.empty:
-            data.loc[data["Postal Code"] == postalcode, "Province"] = province.values[0]
-    return data
+            df.loc[df["Postal Code"] == postalcode, "Province"] = province.values[0]
+    return df
 
 
-def load_appended_data(path):
-    # Import Data and Convert it into a DataFrame
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    newpath = os.path.join(current_dir, "data", "cleaned", path)
-    data = pd.read_csv(newpath)
-    indexed = data.set_index("ID", drop=True)
-    return indexed
+def convert_non_numeric_to_numeric(df: DataFrame) -> DataFrame:
+    """
+    receives a dataframe and converts non-numeric columns to numeric
+    """
+    building_state = {
+        'TO_RESTORE': 0,
+        'TO_RENOVATE': 1,
+        'TO_BE_DONE_UP': 2,
+        'GOOD': 3,
+        'JUST_RENOVATED': 4,
+        'AS_NEW': 5
+    }
+    df['State of Building'] = df['State of Building'].apply(lambda x: building_state.get(x, np.NAN))
+
+    energy_ratings = {
+        "G": 8,
+        "F": 7,
+        "E": 6,
+        "D": 5,
+        "C": 4,
+        "B": 3,
+        "A": 2,
+        "A+": 1,
+        "A++": 0
+    }
+    df['EPC'] = df['EPC'].apply(lambda x: energy_ratings.get(x, np.NAN))
+
+    kitchen_types = {
+        "NOT_INSTALLED": 0,
+        "USA_UNINSTALLED": 0,
+        "SEMI_EQUIPPED": 1,
+        "USA_SEMI_EQUIPPED": 1,
+        "INSTALLED": 2,
+        "USA_INSTALLED": 2,
+        "HYPER_EQUIPPED": 3,
+        "USA_HYPER_EQUIPPED": 3,
+    }
+    df['Kitchen Type'] = df['Kitchen Type'].apply(lambda x: kitchen_types.get(x, np.NAN))
+    house_types = {
+        "APARTMENT": 0,
+        "HOUSE": 1,
+    }
+    df['Type'] = df['Type'].apply(lambda x: house_types.get(x, np.NAN))
+
+    boolean = {
+        False: 0,
+        True: 1
+    }
+
+    df['Kitchen'] = df['Kitchen'].apply(lambda x: boolean.get(x, np.NAN))
+    df['Furnished'] = df['Furnished'].apply(lambda x: boolean.get(x, np.NAN))
+    df['Openfire'] = df['Openfire'].apply(lambda x: boolean.get(x, np.NAN))
+    df['Terrace'] = df['Terrace'].apply(lambda x: boolean.get(x, np.NAN))
+    df['Garden Exists'] = df['Garden Exists'].apply(lambda x: boolean.get(x, np.NAN))
+    df['Swimming Pool'] = df['Swimming Pool'].apply(lambda x: boolean.get(x, np.NAN))
+    return df
 
 
 def to_html(fig, path):
@@ -115,6 +165,9 @@ def main():
     raw_data = load_data("rawdata.csv")
     filled_data = fill_empty_data(raw_data)
     appended_data = append_data(filled_data)
+    converted_data = convert_non_numeric_to_numeric(appended_data)
+    # output to file
+    converted_data.to_csv("appended_data.csv")
 
 
 if __name__ == "__main__":
