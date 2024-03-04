@@ -37,11 +37,12 @@ class Clean:
                     province.values[0]
                 )
         with open(
-            os.path.join(current_dir, "..", "data", "cleaned", "appended_data.csv"),
+            "appended_data.csv",
             "w",
             encoding="utf-8",
         ) as f:
             data.to_csv(f)
+            print('Data appended successfully')
 
     def load_appended_data(self, path):
         # Import Data and Convert it into a DataFrame
@@ -169,8 +170,10 @@ class Clean:
         # drop bedroom count > 5
         df = df[(df['Bedroom Count'] < 5) | df['Bedroom Count'].isna()]
 
-        # drop colum fireplace count
-        df.drop(columns=['Fireplace Count'], inplace=True)
+        # drop colum fireplace count if it exists
+        if 'Fireplace Count' in df.columns:
+            print('dropping fireplace count column')
+            df.drop(columns=['Fireplace Count'], inplace=True)
 
         # drop garden surface > 5000
         df = df[(df['Garden Surface'] < 5000) | df['Garden Surface'].isna()]
@@ -182,7 +185,8 @@ class Clean:
         df = df[(df['Land Surface'] < 3000) | df['Land Surface'].isna()]
 
         # drop the column parking box count
-        df.drop(columns=['Parking box count'], inplace=True)
+        if 'Parking box count' in df.columns:
+            df.drop(columns=['Parking box count'], inplace=True)
 
         # drop items with price > 1_000_000
         df = df[(df['Price'] < 1000000) | df['Price'].isna()]
@@ -191,7 +195,8 @@ class Clean:
         df = df[df['Sale Type'] != 'LIFE_ANNUITY_SALE']
 
         # drop sewer column
-        df.drop(columns=['Sewer'], inplace=True)
+        if 'Sewer' in df.columns:
+            df.drop(columns=['Sewer'], inplace=True)
 
         # only keep items that have SubType == HOUSE, VILLA, TOWN_HOUSE, BUNGALOW, or not specified
         # df = df[df['Subtype'].isin(['HOUSE', 'VILLA', 'TOWN_HOUSE', 'BUNGALOW', None, '']) | df['Subtype'].isna()]
