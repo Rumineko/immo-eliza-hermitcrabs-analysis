@@ -81,11 +81,7 @@ def convert_non_numeric_to_numeric(df: DataFrame) -> DataFrame:
         "USA_HYPER_EQUIPPED": 3,
     }
     df['Kitchen Type'] = df['Kitchen Type'].apply(lambda x: kitchen_types.get(x, np.NAN))
-    house_types = {
-        "APARTMENT": 0,
-        "HOUSE": 1,
-    }
-    df['Type'] = df['Type'].apply(lambda x: house_types.get(x, np.NAN))
+
 
     boolean = {
         False: 0,
