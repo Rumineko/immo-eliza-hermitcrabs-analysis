@@ -4,7 +4,8 @@
 
 By team **HermitCrabs**
 
-[![Charlie](https://cdn.discordapp.com/attachments/1209053035783913502/1214893521212018758/Charlie_100.png?ex=65fac4c3&is=65e84fc3&hm=94b0516c554dd30961f302b9316335a39425fa5860f6e43573d214acceb567cc&)](https://www.linkedin.com/in/mirunasuru/)
+![Charlie](https://cdn.discordapp.com/attachments/1209053035783913502/1214893521212018758/Charlie_100.png?ex=65fac4c3&is=65e84fc3&hm=94b0516c554dd30961f302b9316335a39425fa5860f6e43573d214acceb567cc&)
+
 [Karel](https://www.linkedin.com/in/karel-rodriguez-duran/), [Alice](https://www.linkedin.com/in/alice-edcm/), [Gerrit](https://www.linkedin.com/in/gerrit-geeraerts-143488141/), [Em](https://www.linkedin.com/in/mirunasuru/)
 
 ## 📖 Description
