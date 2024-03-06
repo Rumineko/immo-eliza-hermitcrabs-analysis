@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-import plotly.express as px
 import os
 from pandas import DataFrame
+import plotly.express as px
 
 
 def load_data(path: str) -> DataFrame:
@@ -48,14 +48,16 @@ def convert_non_numeric_to_numeric(df: DataFrame) -> DataFrame:
     receives a dataframe and converts non-numeric columns to numeric
     """
     building_state = {
-        'TO_RESTORE': 0,
-        'TO_RENOVATE': 1,
-        'TO_BE_DONE_UP': 2,
-        'GOOD': 3,
-        'JUST_RENOVATED': 4,
-        'AS_NEW': 5
+        "TO_RESTORE": 0,
+        "TO_RENOVATE": 1,
+        "TO_BE_DONE_UP": 2,
+        "GOOD": 3,
+        "JUST_RENOVATED": 4,
+        "AS_NEW": 5,
     }
-    df['State of Building'] = df['State of Building'].apply(lambda x: building_state.get(x, np.NAN))
+    df["State of Building"] = df["State of Building"].apply(
+        lambda x: building_state.get(x, np.NAN)
+    )
 
     energy_ratings = {
         "G": 8,
@@ -66,9 +68,9 @@ def convert_non_numeric_to_numeric(df: DataFrame) -> DataFrame:
         "B": 3,
         "A": 2,
         "A+": 1,
-        "A++": 0
+        "A++": 0,
     }
-    df['EPC'] = df['EPC'].apply(lambda x: energy_ratings.get(x, np.NAN))
+    df["EPC"] = df["EPC"].apply(lambda x: energy_ratings.get(x, np.NAN))
 
     kitchen_types = {
         "NOT_INSTALLED": 0,
@@ -80,20 +82,18 @@ def convert_non_numeric_to_numeric(df: DataFrame) -> DataFrame:
         "HYPER_EQUIPPED": 3,
         "USA_HYPER_EQUIPPED": 3,
     }
-    df['Kitchen Type'] = df['Kitchen Type'].apply(lambda x: kitchen_types.get(x, np.NAN))
+    df["Kitchen Type"] = df["Kitchen Type"].apply(
+        lambda x: kitchen_types.get(x, np.NAN)
+    )
 
+    boolean = {False: 0, True: 1}
 
-    boolean = {
-        False: 0,
-        True: 1
-    }
-
-    df['Kitchen'] = df['Kitchen'].apply(lambda x: boolean.get(x, np.NAN))
-    df['Furnished'] = df['Furnished'].apply(lambda x: boolean.get(x, np.NAN))
-    df['Openfire'] = df['Openfire'].apply(lambda x: boolean.get(x, np.NAN))
-    df['Terrace'] = df['Terrace'].apply(lambda x: boolean.get(x, np.NAN))
-    df['Garden Exists'] = df['Garden Exists'].apply(lambda x: boolean.get(x, np.NAN))
-    df['Swimming Pool'] = df['Swimming Pool'].apply(lambda x: boolean.get(x, np.NAN))
+    df["Kitchen"] = df["Kitchen"].apply(lambda x: boolean.get(x, np.NAN))
+    df["Furnished"] = df["Furnished"].apply(lambda x: boolean.get(x, np.NAN))
+    df["Openfire"] = df["Openfire"].apply(lambda x: boolean.get(x, np.NAN))
+    df["Terrace"] = df["Terrace"].apply(lambda x: boolean.get(x, np.NAN))
+    df["Garden Exists"] = df["Garden Exists"].apply(lambda x: boolean.get(x, np.NAN))
+    df["Swimming Pool"] = df["Swimming Pool"].apply(lambda x: boolean.get(x, np.NAN))
     return df
 
 
@@ -145,9 +145,6 @@ def exclude_outliers(df: DataFrame):
     # drop items that have sale type LIFE_ANNUITY_SALE
     df = df[df["Sale Type"] != "LIFE_ANNUITY_SALE"]
 
-    # drop sewer column
-    df.drop(columns=["Sewer"], inplace=True)
-
     # only keep items that have SubType == HOUSE, VILLA, TOWN_HOUSE, BUNGALOW, or not specified
     # df = df[df['Subtype'].isin(['HOUSE', 'VILLA', 'TOWN_HOUSE', 'BUNGALOW', None, '']) | df['Subtype'].isna()]
 
@@ -157,11 +154,64 @@ def exclude_outliers(df: DataFrame):
     return df
 
 
+def province_to_region(province):
+    if province in [
+        "LUIK",
+        "LIMBURG",
+        "WAALS-BRABANT",
+        "LUXEMBURG",
+        "NAMEN",
+        "HENEGOUWEN",
+    ]:
+        return "Wallonia"
+    elif province == "BRUSSEL":
+        return "Brussels"
+    elif province in [
+        "OOST-VLAANDEREN",
+        "ANTWERPEN",
+        "VLAAMS-BRABANT",
+        "WEST-VLAANDEREN",
+    ]:
+        return "Flanders"
+    else:
+        return "Unknown"  # For any province value not listed above
+
+
+# Apply the function to the 'Province' column to create the new 'Region' column
+
+
+def price_per_sqm(df: DataFrame):
+    # Create a new column 'Price per m²' by dividing the 'Price' column by the 'Habitable Surface' column
+    df["Price per sqm"] = df["Price"] / (
+        df["Habitable Surface"] + df["Garden Surface"] + df["Terrace Surface"]
+    )
+    return df
+
+
 def main():
     raw_data = load_data("rawdata.csv")
     filled_data = fill_empty_data(raw_data)
     appended_data = append_data(filled_data)
     converted_data = convert_non_numeric_to_numeric(appended_data)
+    converted_data.drop(
+        columns=[
+            "Sewer",
+            "Terrace Orientation",
+            "Garden Orientation",
+            "Has starting Price",
+            "Transaction Subtype",
+            "Is Holiday Property",
+            "Gas Water Electricity",
+            "Sea view",
+            "Parking count inside",
+            "Parking count outside",
+            "Parking box count",
+            "Land Surface",
+        ],
+        inplace=True,
+    )
+    converted_data["Region"] = converted_data["Province"].apply(province_to_region)
+    converted_data = price_per_sqm(converted_data)
     # output to file
     converted_data.to_csv("appended_data.csv")
 
