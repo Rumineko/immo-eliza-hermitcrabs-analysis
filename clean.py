@@ -1,12 +1,11 @@
 import numpy as np
 import pandas as pd
-import os
 from pandas import DataFrame
-import plotly.express as px
+import os
 
 
 def load_data(path: str) -> DataFrame:
-    # Import Data and Convert it into a DataFrame
+    # Imports the data from the raw folder and returns as a DataFrame
     current_dir = os.path.dirname(os.path.abspath(__file__))
     newpath = os.path.join(current_dir, "data", "raw", path)
     df = pd.read_csv(newpath)
@@ -15,16 +14,16 @@ def load_data(path: str) -> DataFrame:
     return df
 
 
-def fill_empty_data(data):
-    # Fill empty values with a specific value
-    data.loc[data["Swimming Pool"].isna(), "Swimming Pool"] = 0
-    data.loc[data["Openfire"] == False, "Fireplace Count"] = 0
-    data.loc[data["Openfire"] == True, "Fireplace Count"] = (
-        data["Fireplace Count"].abs().fillna(1)
+def fill_empty_data(df: DataFrame) -> DataFrame:
+    # Uses Logical Reasoning to Fill in Empty Data
+    df.loc[df["Swimming Pool"].isna(), "Swimming Pool"] = 0
+    df.loc[df["Openfire"] == False, "Fireplace Count"] = 0
+    df.loc[df["Openfire"] == True, "Fireplace Count"] = (
+        df["Fireplace Count"].abs().fillna(1)
     )
-    data.loc[data["Terrace"] == False, "Terrace Surface"] = 0
-    data.loc[data["Garden Exists"] == False, "Garden Surface"] = 0
-    return data
+    df.loc[df["Terrace"] == False, "Terrace Surface"] = 0
+    df.loc[df["Garden Exists"] == False, "Garden Surface"] = 0
+    return df
 
 
 def append_data(df: DataFrame) -> DataFrame:
@@ -32,21 +31,24 @@ def append_data(df: DataFrame) -> DataFrame:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     postals = pd.read_csv(os.path.join(current_dir, "src", "zipcodes.csv"))
     for postalcode in df["Postal Code"]:
+        # Appends Municipality to the DataFrame
         municipality = postals[postals["Postcode"] == postalcode]["Hoofdgemeente"]
         province = postals[postals["Postcode"] == postalcode]["Provincie"]
+        # Appends Municipality to the DataFrame. Utilizes a smart fill method to fill in the province, if it is not found in the csv file.
+        # It's useful in case there are properties in the dataset from another country, which we have encountered in the past.
         if not municipality.empty:
             df.loc[df["Postal Code"] == postalcode, "Municipality"] = (
                 municipality.values[0]
             )
+        # Appends Province to the DataFrame. Utilizes a smart fill method to fill in the province, if it is not found in the csv file.
+        # Same as the above case.
         if not province.empty:
             df.loc[df["Postal Code"] == postalcode, "Province"] = province.values[0]
     return df
 
 
 def convert_non_numeric_to_numeric(df: DataFrame) -> DataFrame:
-    """
-    receives a dataframe and converts non-numeric columns to numeric
-    """
+    # Receives a DataFrame and converts non-numeric data to numeric data.
     building_state = {
         "TO_RESTORE": 0,
         "TO_RENOVATE": 1,
@@ -97,18 +99,11 @@ def convert_non_numeric_to_numeric(df: DataFrame) -> DataFrame:
     return df
 
 
-def to_html(fig, path):
-    # Save the plot as an HTML file
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    newpath = os.path.join(current_dir, "data", "cleaned", path)
-    fig.write_html(newpath)
-
-
 def exclude_outliers(df: DataFrame):
-    # drop the row where type is not house or appartment
+    # Drop the row where Type is not House or Appartment
     df = df[df["Type"].isin(["APARTMENT", "HOUSE"]) | df["Type"].isna()]
 
-    # drop Kitchen Surface > 100
+    # Drop Kitchen Surface > 100
     df = df[(df["Kitchen Surface"] < 100) | df["Kitchen Surface"].isna()]
 
     # drop Build year "< 1850"
@@ -155,6 +150,7 @@ def exclude_outliers(df: DataFrame):
 
 
 def province_to_region(province):
+    # This function takes a province as input and returns the region it belongs to
     if province in [
         "LUIK",
         "LIMBURG",
@@ -177,11 +173,8 @@ def province_to_region(province):
         return "Unknown"  # For any province value not listed above
 
 
-# Apply the function to the 'Province' column to create the new 'Region' column
-
-
 def price_per_sqm(df: DataFrame):
-    # Create a new column 'Price per m²' by dividing the 'Price' column by the 'Habitable Surface' column
+    # Create a new column 'Price per Sqm' by dividing the 'Price' column by the 'Habitable Surface', 'Garden Surface' and 'Terrace Surface' columns
     df["Price per sqm"] = df["Price"] / (
         df["Habitable Surface"] + df["Garden Surface"] + df["Terrace Surface"]
     )
@@ -189,10 +182,16 @@ def price_per_sqm(df: DataFrame):
 
 
 def main():
+    # And Finally, the main function
+    # We start off by loading the raw data
     raw_data = load_data("rawdata.csv")
+    # We then fill in the empty data
     filled_data = fill_empty_data(raw_data)
+    # We then append the data
     appended_data = append_data(filled_data)
+    # We then convert the non-numeric data to numeric data
     converted_data = convert_non_numeric_to_numeric(appended_data)
+    # We drop some columns that we don't need
     converted_data.drop(
         columns=[
             "Sewer",
@@ -210,10 +209,14 @@ def main():
         ],
         inplace=True,
     )
+    # We create a new column 'Region' by applying the function 'province_to_region' to the 'Province' column
     converted_data["Region"] = converted_data["Province"].apply(province_to_region)
+    # We use the price_per_sqm function to create a new column 'Price per Sqm'
     converted_data = price_per_sqm(converted_data)
-    # output to file
-    converted_data.to_csv("appended_data.csv")
+    # We output the data to a new csv file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    newpath = os.path.join(current_dir, "data", "cleaned", "appended_data.csv")
+    converted_data.to_csv(newpath)
 
 
 if __name__ == "__main__":

@@ -2,32 +2,37 @@
 
 [![forthebadge made-with-python](https://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
-By team **Crawl Along**: 
+By team **HermitCrabs**
+
+[![Charlie](https://cdn.discordapp.com/attachments/1209053035783913502/1214893521212018758/Charlie_100.png?ex=65fac4c3&is=65e84fc3&hm=94b0516c554dd30961f302b9316335a39425fa5860f6e43573d214acceb567cc&)](https://www.linkedin.com/in/mirunasuru/)
 [Karel](https://www.linkedin.com/in/karel-rodriguez-duran/), [Alice](https://www.linkedin.com/in/alice-edcm/), [Gerrit](https://www.linkedin.com/in/gerrit-geeraerts-143488141/), [Em](https://www.linkedin.com/in/mirunasuru/)
 
 ## 📖 Description
-The Second Part of our Project,
 
-Features:
+Clean.py is our main tool in this project, and it is responsible for multiple functions to clean and prepare data to help with data visualization:
 
-- Works off data collected from our first part of the project.
-- Grabs the data and cleans empty values.
-- Creates neat and interactive data to analyze Housing/Appartment statistics.
+* Imports the Raw Data from Part 1 of our Project, and appends some extra information with a few functions:
+  * append_data: Adds a Municipality and Province column, by comparing the Postal Code present in each property to a list we obtained from [BPost](https://www.bpost.be/nl/postcodevalidatie-tool)'s website.
+  * province_to_region: Adds a Region column, by checking previously added Province column and comparing its values.
+  * price_per_sqm: Adds a Price Per Sqm column, which is calculated by dividing the price of a property by its total area (which is a sum of habitable surface, terrace surface and garden surface)
+* Fills empty data values by using logical reasoning: e.g. filling empty values of Garden Surface for 0 in case Garden Exists is False.
+* Converts booleans (True or False) values into numericals (1 or 0, respectively), as well as some others using other kinds of logic.
 
 ## 🛠️ Setup & Installation
 
 - create a new virtual environment by executing this command in your terminal:
-`python3 -m venv data_analysis_env`
+  `python3 -m venv data_analysis_env`
 - activate the environment by executing this command in your terminal:
-`source data_analysis_env/bin/activate`
+  `source data_analysis_env/bin/activate`
 - install the required dependencies by executing this command in your terminal:
-`pip install -r requirements.txt`
+  `pip install -r requirements.txt`
 
 ## 👩‍💻 Usage
+
 To run the program, clone this repo on your local machine, navigate to its directory in your terminal, make sure you have first executed your requirements.txt, then execute:
 
 ```
-python3 main.py
+python3 clean.py
 ```
 
 ## 🗂️ File Structure
@@ -36,40 +41,36 @@ python3 main.py
 .
 ├── analysis/
 │   ├── PLACEHOLDER
-│   └── PLACEHOLDER
+│   └── pygwalker.ipynb
 │
 ├── data/
 │   ├── cleaned/
-│   │   ├── some_plot.html
-│   │   └── PLACEHOLDER
+│   │   └── appended_data.csv
 │   └── raw/
-│       ├── rawdata.csv
-│       └── rawdata.json
+│       └── rawdata.csv
 │
 ├── reports/
-│   └── PLACEHOLDER.pdf
+│   └── final_presentation.pdf
 │
 ├── src/
-│   └── clean.py
+│   └── zipcodes.csv
 │
 ├── .gitignore
-├── main.py
+├── clean.py
 └── README.md
 ```
 
-## Program output
+## Program Output
 
-The program's output are graphs containing information about approx 12,000 properties all over Belgium.
+The end result is a lot of refined data that we utilize to study the connection between the different variables of a house/apartment and its resulting selling price. We each took our own initiative to utilize this data we refined and then studied it after discussing what kinds of graphs each of us should focus on.
 
+## 📂 Project Background & Timeline
 
-## 📂 Project background & timeline
-
-This data analysis project was done as part of the BeCode AI Bootcamp over the course of one week in February-March 2024. 
+This data analysis project was done as part of the BeCode AI Bootcamp over the course of approximately two weeks in February-March 2024.
 It is the second phase of a larger team project to build a machine learning model that predicts the price of real estate properties in Belgium.
 
+## Thank you for Visiting our Project Page!
 
-## Thank you for visiting our project page!
+We are team **HermitCrabs**: [Karel](https://www.linkedin.com/in/karel-rodriguez-duran/), [Alice](https://www.linkedin.com/in/alice-edcm/), [Gerrit](https://www.linkedin.com/in/gerrit-geeraerts-143488141/), [Em](https://www.linkedin.com/in/mirunasuru/)
 
-We are team **Crawl Along**: [Karel](https://www.linkedin.com/in/karel-rodriguez-duran/), [Alice](https://www.linkedin.com/in/alice-edcm/), [Gerrit](https://www.linkedin.com/in/gerrit-geeraerts-143488141/), [Em](https://www.linkedin.com/in/mirunasuru/)
-
-![crawl-along](https://biol326.files.wordpress.com/2018/04/andres-rivera-crab-gif-source.gif)
+![Charlie](https://cdn.discordapp.com/attachments/1209053035783913502/1214891793930526760/Charlie.png?ex=65fac327&is=65e84e27&hm=4acdc82dfbc91b7bea6fd4c50ce1a4a21806aa089252e7dfd11c5cb65c19ff00&)
