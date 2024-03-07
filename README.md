@@ -1,8 +1,8 @@
-# Immo Eliza / Data Analysis (WIP)
+# Immo Eliza / Data Analysis
 
 [![forthebadge made-with-python](https://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
-By team **HermitCrabs**
+By team **HermitCrab**
 
 ![Charlie](https://cdn.discordapp.com/attachments/1209053035783913502/1214893521212018758/Charlie_100.png?ex=65fac4c3&is=65e84fc3&hm=94b0516c554dd30961f302b9316335a39425fa5860f6e43573d214acceb567cc&)
 
@@ -72,6 +72,6 @@ It is the second phase of a larger team project to build a machine learning mode
 
 ## Thank you for Visiting our Project Page!
 
-We are team **HermitCrabs**: [Karel](https://www.linkedin.com/in/karel-rodriguez-duran/), [Alice](https://www.linkedin.com/in/alice-edcm/), [Gerrit](https://www.linkedin.com/in/gerrit-geeraerts-143488141/), [Em](https://www.linkedin.com/in/mirunasuru/)
+We are team **HermitCrab**: [Karel](https://www.linkedin.com/in/karel-rodriguez-duran/), [Alice](https://www.linkedin.com/in/alice-edcm/), [Gerrit](https://www.linkedin.com/in/gerrit-geeraerts-143488141/), [Em](https://www.linkedin.com/in/mirunasuru/)
 
 ![Charlie](https://cdn.discordapp.com/attachments/1209053035783913502/1214891793930526760/Charlie.png?ex=65fac327&is=65e84e27&hm=4acdc82dfbc91b7bea6fd4c50ce1a4a21806aa089252e7dfd11c5cb65c19ff00&)
